@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     public float moveSpeed = 5f;
     public float rotateAngle = 30;
     public float rotationSpeed = 100;
+    public GeneratePPM ppmScript;
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +70,7 @@ public class CameraController : MonoBehaviour
         {
             System.Threading.Thread.Sleep(500);
             Debug.Log("space bar pressed");
+            ppmScript.Generate(3);
         }
             
 
