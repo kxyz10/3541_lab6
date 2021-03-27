@@ -6,8 +6,8 @@ public class CameraController : MonoBehaviour
 {
     Vector3 homePos;
     public float moveSpeed = 5f;
-    public float rotateAngle = 1.0f;
-    public float rotationSpeed = 10;
+    public float rotateAngle = 30;
+    public float rotationSpeed = 100;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,20 +37,32 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.X))
         {
-            Vector3 rotation = transform.eulerAngles;
+            if (Input.GetKey(KeyCode.Return))
+            {
+                float rotation = rotateAngle * Time.deltaTime;
+                transform.Rotate(0, -rotation, 0);
+            }
+            else
+            {
+                float rotation = rotateAngle * Time.deltaTime;
+                transform.Rotate(0, rotation, 0);
+            }
 
-            rotation.x += Input.GetAxis("Horizontal") * rotationSpeed * 10.0f; // Standart Left-/Right Arrows and A & D Keys
-
-            transform.eulerAngles = rotation;
         }
 
         if (Input.GetKey(KeyCode.Y))
         {
-            Vector3 rotation = transform.eulerAngles;
+            if (Input.GetKey(KeyCode.Return))
+            {
+                float rotation = rotateAngle * Time.deltaTime;
+                transform.Rotate(-rotation, 0, 0);
+            }
+            else
+            {
+                float rotation = rotateAngle * Time.deltaTime;
+                transform.Rotate(rotation, 0, 0);
+            }
 
-            rotation.y += Input.GetAxis("Vertical") * rotationSpeed * 10.0f; // Standart Left-/Right Arrows and A & D Keys
-
-            transform.eulerAngles = rotation;
         }
 
         if (Input.GetKey(KeyCode.Space))
