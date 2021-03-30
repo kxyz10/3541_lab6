@@ -6,15 +6,16 @@ using UnityEngine;
 public class GeneratePPM : MonoBehaviour
 {
     public string fileName;
-    GameObject camera;
+    public Camera camera;
     float distanceToImageFrame;
     float pixelSize;
     // Start is called before the first frame update
     void Start()
     {
         fileName = "raytrace.ppm";
-        camera = GameObject.Find("Main Camera");
-        distanceToImageFrame = 5.0f;
+        //camera = GameObject.Find("Main Camera");
+        camera = Camera.main;
+        distanceToImageFrame = 10f;
         pixelSize = 1.0f;
     }
 
@@ -34,6 +35,36 @@ public class GeneratePPM : MonoBehaviour
         StreamWriter writer = new StreamWriter(fs);
         Vector3[,] pixelCenters = MakePixelChart(size);
         printArray(pixelCenters, size);
+        int i = 0;
+        while (i < size)
+        {
+            int j = 0;
+            while (j < size)
+            {
+                // Bit shift the index of the layer (8) to get a bit mask
+                int layerMask = 1 << 8;
+
+                // This would cast rays only against colliders in layer 8.
+                // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+                layerMask = ~layerMask;
+                Vector3 direction = pixelCenters[i, j] - camera.transform.position;
+                RaycastHit hit;
+                // Does the ray intersect any objects excluding the player layer
+                if (Physics.Raycast(camera.transform.position, direction, out hit, Mathf.Infinity, layerMask))
+                {
+                    Debug.DrawRay(camera.transform.position, direction * hit.distance, Color.black, 1000, false);
+                    Debug.Log("Did Hit");
+                }
+                else
+                {
+                    Debug.DrawRay(camera.transform.position, direction * 1000, Color.red, 1000, false);
+                    Debug.Log("Did not Hit");
+                }
+                j += 1;
+            }
+            i += 1;
+        }
+
         writer.Write("P3\n");
         writer.Write($"{size} {size}\n");
         writer.Write("255\n");
