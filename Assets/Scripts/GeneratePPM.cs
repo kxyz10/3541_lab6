@@ -53,7 +53,7 @@ public class GeneratePPM : MonoBehaviour
                 // This would cast rays only against colliders in layer 8.
                 // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
                 layerMask = ~layerMask;
-                Vector3 direction = pixelCenters[i, j] - camera.transform.position;
+                Vector3 direction = pixelCenters[i,j] - camera.transform.position;
                 RaycastHit hit;
                 // Does the ray intersect any objects excluding the player layer
                 if (Physics.Raycast(camera.transform.position, direction, out hit, Mathf.Infinity, layerMask))
@@ -100,9 +100,9 @@ public class GeneratePPM : MonoBehaviour
             int j = 0;
             while (j < size)
             {
-                rowDistance = i - size;
-                colDistance = j - size;
-                chart[j, i] = center + pixelSize * colDistance * camera.transform.right + pixelSize * rowDistance * camera.transform.up;
+                rowDistance = (mid - i);
+                colDistance = (mid - j);
+                chart[i,j] = center + pixelSize * colDistance * -camera.transform.right + pixelSize * rowDistance * camera.transform.up;
                 j += 1;
             }
             i += 1;

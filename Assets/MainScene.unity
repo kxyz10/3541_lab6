@@ -545,7 +545,7 @@ MonoBehaviour:
   rotateAngle: 15
   rotationSpeed: 10
   ppmScript: {fileID: 144621335}
-  size: 100
+  size: 500
   mode: 0
 --- !u!1 &967809762
 GameObject:
