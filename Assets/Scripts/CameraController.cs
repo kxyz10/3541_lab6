@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
     public float rotateAngle = 30;
     public float rotationSpeed = 100;
     public GeneratePPM ppmScript;
-    public int size = 3;
+    public int size = 100;
     public bool mode = true;
     // Start is called before the first frame update
     void Start()

@@ -9,14 +9,15 @@ public class GeneratePPM : MonoBehaviour
     public Camera camera;
     float distanceToImageFrame;
     float pixelSize;
+    float gridSize = 2f;
     // Start is called before the first frame update
     void Start()
     {
         fileName = "raytrace.ppm";
         //camera = GameObject.Find("Main Camera");
         camera = Camera.main;
-        distanceToImageFrame = 10f;
-        pixelSize = 1.0f;
+        distanceToImageFrame = 2f;
+        //pixelSize = 1.0f;
     }
 
     // Update is called once per frame
@@ -28,6 +29,8 @@ public class GeneratePPM : MonoBehaviour
     public void Generate(int size)
     {
         Debug.Log("Generating ppm");
+        //keeps grid size constant
+        pixelSize = gridSize/size;
 
 
 
@@ -80,6 +83,7 @@ public class GeneratePPM : MonoBehaviour
 
     public Vector3[,] MakePixelChart(int size)
     {
+        Debug.Log(pixelSize);
         //Create the 2D array of the image pixels
         //Values of the array represent the center of the pixel
         Vector3[,] chart = new Vector3[size, size];
