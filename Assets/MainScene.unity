@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: 
+  camera: {fileID: 0}
 --- !u!4 &144621336
 Transform:
   m_ObjectHideFlags: 0
@@ -216,7 +217,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2cc6ea35139ad425385f2749971dbbe0, type: 2}
+  - {fileID: 2100000, guid: 0b72a46e9585944808525578ab38e918, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -544,6 +545,7 @@ MonoBehaviour:
   rotateAngle: 15
   rotationSpeed: 10
   ppmScript: {fileID: 144621335}
+  size: 5
 --- !u!1 &967809762
 GameObject:
   m_ObjectHideFlags: 0

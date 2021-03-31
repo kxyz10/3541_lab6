@@ -35,6 +35,9 @@ public class GeneratePPM : MonoBehaviour
         StreamWriter writer = new StreamWriter(fs);
         Vector3[,] pixelCenters = MakePixelChart(size);
         printArray(pixelCenters, size);
+        writer.Write("P3\n");
+        writer.Write($"{size} {size}\n");
+        writer.Write("255\n");
         int i = 0;
         while (i < size)
         {
@@ -52,23 +55,26 @@ public class GeneratePPM : MonoBehaviour
                 // Does the ray intersect any objects excluding the player layer
                 if (Physics.Raycast(camera.transform.position, direction, out hit, Mathf.Infinity, layerMask))
                 {
+                    GameObject objHit = hit.collider.gameObject;
+                    Color32 objColor = objHit.GetComponent<Renderer>().material.color;
+                    writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
                     Debug.DrawRay(camera.transform.position, direction * hit.distance, Color.black, 1000, false);
                     Debug.Log("Did Hit");
                 }
                 else
                 {
+                    writer.Write("255 255 255 ");
                     Debug.DrawRay(camera.transform.position, direction * 1000, Color.red, 1000, false);
                     Debug.Log("Did not Hit");
                 }
                 j += 1;
             }
+            writer.Write("\n");
             i += 1;
         }
 
-        writer.Write("P3\n");
-        writer.Write($"{size} {size}\n");
-        writer.Write("255\n");
-        writer.Write("255 255 255 020 222 145 255 255 255\n000 000 000 255 255 255 000 000 000\n255 255 255 000 000 000 255 255 255");
+        
+        //writer.Write("255 255 255 020 222 145 255 255 255\n000 000 000 255 255 255 000 000 000\n255 255 255 000 000 000 255 255 255");
         writer.Close();
     }
 
