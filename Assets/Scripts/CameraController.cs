@@ -120,6 +120,12 @@ public class CameraController : MonoBehaviour
             Debug.Log("space bar pressed");
             ppmScript.Generate(size);
         }
+        if (Input.GetKey(KeyCode.Tab))
+        {
+            System.Threading.Thread.Sleep(500);
+            Debug.Log("tab pressed");
+            ppmScript.GenerateOrtho(size);
+        }
 
         if (Input.GetKey(KeyCode.O) && mode)
         {

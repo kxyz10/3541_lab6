@@ -26,6 +26,62 @@ public class GeneratePPM : MonoBehaviour
         
     }
 
+    public void GenerateOrtho(int size)
+    {
+        Debug.Log("Generating orthographic ppm");
+        //keeps grid size constant
+        pixelSize = gridSize / size;
+
+
+
+        FileStream fs = File.Create(fileName);
+        StreamWriter writer = new StreamWriter(fs);
+        Vector3[,] pixelCenters = MakePixelChart(size);
+        printArray(pixelCenters, size);
+        writer.Write("P3\n");
+        writer.Write($"{size} {size}\n");
+        writer.Write("255\n");
+        int i = 0;
+        while (i < size)
+        {
+            int j = 0;
+            while (j < size)
+            {
+                // Bit shift the index of the layer (8) to get a bit mask
+                int layerMask = 1 << 8;
+
+                // This would cast rays only against colliders in layer 8.
+                // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+                layerMask = ~layerMask;
+                //Vector3 direction = pixelCenters[i, j] - camera.transform.position;
+                Vector3 direction = camera.transform.forward;
+                RaycastHit hit;
+                // Does the ray intersect any objects excluding the player layer
+                if (Physics.Raycast(pixelCenters[i,j], direction, out hit, Mathf.Infinity, layerMask))
+                {
+                    GameObject objHit = hit.collider.gameObject;
+                    Color32 objColor = objHit.GetComponent<Renderer>().material.color;
+                    writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
+                    Debug.DrawRay(pixelCenters[i, j], direction * hit.distance, Color.black, 1000, false);
+                    Debug.Log("Did Hit");
+                }
+                else
+                {
+                    writer.Write("255 255 255 ");
+                    Debug.DrawRay(pixelCenters[i, j], direction * 1000, Color.red, 1000, false);
+                    Debug.Log("Did not Hit");
+                }
+                j += 1;
+            }
+            writer.Write("\n");
+            i += 1;
+        }
+
+
+        //writer.Write("255 255 255 020 222 145 255 255 255\n000 000 000 255 255 255 000 000 000\n255 255 255 000 000 000 255 255 255");
+        writer.Close();
+    }
+
     public void Generate(int size)
     {
         Debug.Log("Generating ppm");
