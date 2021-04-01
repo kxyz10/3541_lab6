@@ -53,6 +53,46 @@ public class GeneratePPM : MonoBehaviour
         }
     }
 
+    public Color32 calcDiffuse(Vector3 source, RaycastHit hit, Vector3 direction, int layerMask)
+    {
+        if (Physics.Raycast(source, direction, out hit, Mathf.Infinity, layerMask))
+        {
+            GameObject objHit = hit.collider.gameObject;
+            //Color32 objColor = objHit.GetComponent<Renderer>().material.color;
+            GameObject light = GameObject.Find("Directional Light");
+            Debug.Log(light.transform.position);
+            Vector3 lightVector = light.transform.position - objHit.transform.position;
+            Vector3 objNormal = objHit.transform.up;
+            float cos = Vector3.Dot(objNormal, lightVector);
+            float intensity = 0.2f;
+            float material = 0.2f;
+            
+
+            Color objColor = new Color32();
+            objColor.r = 255;
+            objColor.g = 255;
+            objColor.b = 255;
+            objColor = objColor * cos * intensity * material;
+            Color32 objColor32 = objColor;
+
+            //Debug.DrawRay(source, direction * hit.distance, Color.black, 1000, false);
+            //Debug.Log("Did Hit");
+            return objColor32;
+        }
+        else
+        {
+            //writer.Write("255 255 255 ");
+            Color32 white = new Color32();
+            white.r = 255;
+            white.g = 255;
+            white.b = 255;
+            //Debug.DrawRay(source, direction * 1000, Color.red, 1000, false);
+            //Debug.Log("Did not Hit");
+            return white;
+
+        }
+    }
+
     public void GenerateOrtho(int size)
     {
         Debug.Log("Generating orthographic ppm");
@@ -123,7 +163,10 @@ public class GeneratePPM : MonoBehaviour
                 Vector3 direction = pixelCenters[i,j] - camera.transform.position;
                 RaycastHit hit = new RaycastHit();
                 // Does the ray intersect any objects excluding the player layer
-                Color32 objColor = calcAmbient(camera.transform.position, hit, direction, layerMask);
+                Color ambColor = calcAmbient(camera.transform.position, hit, direction, layerMask);
+                Color difColor = calcDiffuse(camera.transform.position, hit, direction, layerMask);
+                Color totalColor = ambColor + difColor;
+                Color32 objColor = totalColor;
                 writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
                 j += 1;
             }
