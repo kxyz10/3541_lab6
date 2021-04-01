@@ -26,14 +26,38 @@ public class GeneratePPM : MonoBehaviour
         
     }
 
+    public Color32 calcAmbient(Vector3 source, RaycastHit hit, Vector3 direction, int layerMask)
+    {
+
+        if (Physics.Raycast(source, direction, out hit, Mathf.Infinity, layerMask))
+        {
+            GameObject objHit = hit.collider.gameObject;
+            Color32 objColor = objHit.GetComponent<Renderer>().material.color;
+
+            //writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
+            Debug.DrawRay(source, direction * hit.distance, Color.black, 1000, false);
+            Debug.Log("Did Hit");
+            return objColor;
+        }
+        else
+        {
+            //writer.Write("255 255 255 ");
+            Color32 white = new Color32();
+            white.r = 255;
+            white.g = 255;
+            white.b = 255;
+            Debug.DrawRay(source, direction * 1000, Color.red, 1000, false);
+            Debug.Log("Did not Hit");
+            return white;
+
+        }
+    }
+
     public void GenerateOrtho(int size)
     {
         Debug.Log("Generating orthographic ppm");
         //keeps grid size constant
         pixelSize = gridSize / size;
-
-
-
         FileStream fs = File.Create(fileName);
         StreamWriter writer = new StreamWriter(fs);
         Vector3[,] pixelCenters = MakePixelChart(size);
@@ -49,28 +73,15 @@ public class GeneratePPM : MonoBehaviour
             {
                 // Bit shift the index of the layer (8) to get a bit mask
                 int layerMask = 1 << 8;
-
                 // This would cast rays only against colliders in layer 8.
                 // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
                 layerMask = ~layerMask;
                 //Vector3 direction = pixelCenters[i, j] - camera.transform.position;
                 Vector3 direction = camera.transform.forward;
-                RaycastHit hit;
+                RaycastHit hit = new RaycastHit();
                 // Does the ray intersect any objects excluding the player layer
-                if (Physics.Raycast(pixelCenters[i,j], direction, out hit, Mathf.Infinity, layerMask))
-                {
-                    GameObject objHit = hit.collider.gameObject;
-                    Color32 objColor = objHit.GetComponent<Renderer>().material.color;
-                    writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
-                    Debug.DrawRay(pixelCenters[i, j], direction * hit.distance, Color.black, 1000, false);
-                    Debug.Log("Did Hit");
-                }
-                else
-                {
-                    writer.Write("255 255 255 ");
-                    Debug.DrawRay(pixelCenters[i, j], direction * 1000, Color.red, 1000, false);
-                    Debug.Log("Did not Hit");
-                }
+                Color32 objColor = calcAmbient(pixelCenters[i,j], hit, direction, layerMask);
+                writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
                 j += 1;
             }
             writer.Write("\n");
@@ -82,7 +93,7 @@ public class GeneratePPM : MonoBehaviour
         writer.Close();
     }
 
-    public void Generate(int size)
+    public void GeneratePerspective(int size)
     {
         Debug.Log("Generating ppm");
         //keeps grid size constant
@@ -110,22 +121,10 @@ public class GeneratePPM : MonoBehaviour
                 // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
                 layerMask = ~layerMask;
                 Vector3 direction = pixelCenters[i,j] - camera.transform.position;
-                RaycastHit hit;
+                RaycastHit hit = new RaycastHit();
                 // Does the ray intersect any objects excluding the player layer
-                if (Physics.Raycast(camera.transform.position, direction, out hit, Mathf.Infinity, layerMask))
-                {
-                    GameObject objHit = hit.collider.gameObject;
-                    Color32 objColor = objHit.GetComponent<Renderer>().material.color;
-                    writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
-                    Debug.DrawRay(camera.transform.position, direction * hit.distance, Color.black, 1000, false);
-                    Debug.Log("Did Hit");
-                }
-                else
-                {
-                    writer.Write("255 255 255 ");
-                    Debug.DrawRay(camera.transform.position, direction * 1000, Color.red, 1000, false);
-                    Debug.Log("Did not Hit");
-                }
+                Color32 objColor = calcAmbient(camera.transform.position, hit, direction, layerMask);
+                writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
                 j += 1;
             }
             writer.Write("\n");

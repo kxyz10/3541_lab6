@@ -118,7 +118,7 @@ public class CameraController : MonoBehaviour
         {
             System.Threading.Thread.Sleep(500);
             Debug.Log("space bar pressed");
-            ppmScript.Generate(size);
+            ppmScript.GeneratePerspective(size);
         }
         if (Input.GetKey(KeyCode.Tab))
         {
