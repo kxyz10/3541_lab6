@@ -38,3 +38,5 @@ Both Modes
 - Tab: run orthogonal mode PPM generation from current position
 
 You can change the resolution of the PPM by changing the value of "Size" in CameraController.cs script attached to the Main Camera. It is a public variable so you can do it inside the Unity Editor.
+
+The generated PPM will be in the base of the project and be called "raytrace.ppm". 
