@@ -164,8 +164,9 @@ public class GeneratePPM : MonoBehaviour
                 RaycastHit hit = new RaycastHit();
                 // Does the ray intersect any objects excluding the player layer
                 Color ambColor = calcAmbient(camera.transform.position, hit, direction, layerMask);
+                //not using diffusion, couldnt get it to work
                 Color difColor = calcDiffuse(camera.transform.position, hit, direction, layerMask);
-                Color totalColor = ambColor + difColor;
+                Color totalColor = ambColor;
                 Color32 objColor = totalColor;
                 writer.Write($"{objColor.r} {objColor.g} {objColor.b} ");
                 j += 1;
@@ -186,7 +187,11 @@ public class GeneratePPM : MonoBehaviour
         //Values of the array represent the center of the pixel
         Vector3[,] chart = new Vector3[size, size];
         Vector3 center = camera.transform.position + camera.transform.forward * distanceToImageFrame;
-        //assume size is odd
+        float evenOffset = 0;
+        if(size % 2 == 0)
+        {
+            evenOffset = 0.5f;
+        }
         //since arrays start at 0 dont need to add 1 
         int mid = size / 2;
         chart[mid, mid] = center;
@@ -200,7 +205,7 @@ public class GeneratePPM : MonoBehaviour
             {
                 rowDistance = (mid - i);
                 colDistance = (mid - j);
-                chart[i,j] = center + pixelSize * colDistance * -camera.transform.right + pixelSize * rowDistance * camera.transform.up;
+                chart[i,j] = center + (Vector3.right*evenOffset *pixelSize) + pixelSize * colDistance * -camera.transform.right + (Vector3.up * evenOffset *pixelSize) + pixelSize * rowDistance * camera.transform.up;
                 j += 1;
             }
             i += 1;
