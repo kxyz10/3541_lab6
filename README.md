@@ -15,7 +15,7 @@ Controls:
 
 There are two movement modes: free movement and straight on view
 
-O: stright on view
+O: straight on view
 - W: top down
 - D: side view
 - S: side view
